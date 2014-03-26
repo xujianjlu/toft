@@ -19,16 +19,15 @@
 using namespace toft;
 
 DEFINE_int32(test_num, 1000000, "");
-DEFINE_bool(in_memory, false, "");
+DEFINE_int32(max_key_len, 50, "");
+DEFINE_int32(max_value_len, 50, "");
 
 void TestSSTableWriter(SSTableWriter *builder,
-                       const std::string &sstable_path,
-                       int key_mod,
-                       SSTableReader::ReadMode type) {
+                       const std::string &sstable_path) {
   LOG(INFO)<< "Start build sstable ...";
   for (int i = 0; i < FLAGS_test_num; ++i) {
-    std::string key = GenKey(i, key_mod);
-    std::string value = GenValue(i, key_mod);
+    std::string key = GenKey(i, FLAGS_max_key_len);
+    std::string value = GenValue(i, FLAGS_max_value_len);
     builder->AddOrDie(key, value);
     if (i % 10000 == 0) {
       LOG(INFO) << "write num:" << i;
@@ -46,11 +45,7 @@ int main(int argc, char** argv) {
   std::string path = "/tmp/test_single.sstable";
   option.set_path(path);
   SingleSSTableWriter builder(option);
-  SSTableReader::ReadMode mode = SSTableReader::ON_DISK;
-   if (FLAGS_in_memory) {
-     mode = SSTableReader::IN_MEMORY;
-   }
-  TestSSTableWriter(&builder, path, kMaxLength, mode);
+  TestSSTableWriter(&builder, path);
   LOG(INFO) << "Done";
   return 0;
 }
