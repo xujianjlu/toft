@@ -19,6 +19,7 @@
 using namespace toft;
 
 DEFINE_int32(test_num, 1000000, "");
+DEFINE_bool(in_memory, false, "");
 
 void TestSSTableWriter(SSTableWriter *builder,
                        const std::string &sstable_path,
@@ -45,8 +46,11 @@ int main(int argc, char** argv) {
   std::string path = "/tmp/test_single.sstable";
   option.set_path(path);
   SingleSSTableWriter builder(option);
-  TestSSTableWriter(&builder, path, kMaxLength,
-                    SSTableReader::ON_DISK);
+  SSTableReader::ReadMode mode = SSTableReader::ON_DISK;
+   if (FLAGS_in_memory) {
+     mode = SSTableReader::IN_MEMORY;
+   }
+  TestSSTableWriter(&builder, path, kMaxLength, mode);
   LOG(INFO) << "Done";
   return 0;
 }
