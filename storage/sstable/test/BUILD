@@ -38,3 +38,9 @@ cc_binary(
         '//toft/storage/sstable:sstable_writer',
     ]
 )
+
+cc_binary(
+    name = 'build_debug',
+    srcs = ['build_debug.cpp'],
+    deps = ['//toft/storage/sstable:sstable_writer', ]
+)
