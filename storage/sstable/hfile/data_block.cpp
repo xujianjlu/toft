@@ -22,6 +22,7 @@ namespace toft {
 namespace hfile {
 
 DataBlock::~DataBlock() {
+    delete compression_;
 }
 
 DataBlock::DataBlock(CompressType codec)
